@@ -33,12 +33,25 @@ export const likePost = async (req, res) => {
   }
 };
 
+
 export const deletePost = async (req, res) => {
   try {
     const { id } = req.params;
+
+    // Validación: ID debe ser un número entero positivo:
+    if (isNaN(id) || parseInt(id) <= 0) {
+      return res.status(400).json({ error: "ID inválido" });
+    }
+
     const deletedPost = await deletePostModel(id);
-    res.status(200).json(deletedPost);
+
+    // Si no se encontró el post, retornar 404.
+    if (!deletedPost) {
+      return res.status(404).json({ error: "Post no encontrado" });
+    }
+    res.status(200).json({ message: "Post eliminado correctamente", deletedPost });
   } catch (error) {
-    res.status(500).json({ error: "Error al eliminar el post" });
+    console.error("Error al eliminar el post:", error);
+    res.status(500).json({ error: "Error interno del servidor" });
   }
 };

@@ -21,4 +21,3 @@ pool.query("SELECT NOW()", (err, res) => {
 });
 
 export default pool;
-
