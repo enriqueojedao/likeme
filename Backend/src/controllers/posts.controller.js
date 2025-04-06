@@ -26,13 +26,23 @@ export const createPost = async (req, res) => {
 export const likePost = async (req, res) => {
   try {
     const { id } = req.params;
+
+    if (isNaN(id) || parseInt(id) <= 0) {
+      return res.status(400).json({ error: "ID inválido" });
+    }
+
     const updatedPost = await likePostModel(id);
+
+    if (!updatedPost) {
+      return res.status(404).json({ error: "Post no encontrado para dar like" });
+    }
+
     res.status(200).json(updatedPost);
   } catch (error) {
+    console.error("Error al dar like:", error);
     res.status(500).json({ error: "Error al dar like" });
   }
 };
-
 
 export const deletePost = async (req, res) => {
   try {
